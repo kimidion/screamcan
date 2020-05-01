@@ -11,18 +11,18 @@ can.radius = can.diameter/2;
 can.circumference = 2 * storeP5.PI * can.radius;
 
 // layers
-export const layerConfig = writable([
-    { name: 'solid layer', type: 'SOLID', r: 245, g: 215, b: 205 },
-    { name: 'text 1', type: 'TEXT', posX: 0, posY: 100, textSize: 75, text: 'HELLO' },
+export const layerConfig = readable([
+    { name: 'solid layer', type: 'SOLID', posX: 0, posY: 0, r: 230, g: 141, b: 58, a: 175 },
+    { name: 'text 1', type: 'TEXT', posX: 25, posY: 100, textSize: 50, text: 'HELLO' },
     { name: 'text 2', type: 'TEXT', posX: 100, posY: 200, textSize: 90, text: 'WORLD' }
 ]);
 export const layers = writable([]);
 export const texture = derived(layers, $layers => {
     let compiled = layerInit();
     compiled.background(255, 255, 255);
-    for (let i = 0; i < $layers.length; i += 1) {
-        compiled.image($layers[i], 0, 0);
-    }
+    $layers.forEach(layer => {
+        layer.render(compiled);
+    });
     resetStoreP5();
     return compiled;
 });

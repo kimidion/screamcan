@@ -1,10 +1,9 @@
 <script>
     import P5Canvas from "./P5Canvas.svelte";
     import { can, texture } from './stores/store.js';
-    import { canvas } from './constants/layers.js';
+    import { canvas } from './layers/layers.js';
 
     let canSketch = (p5) => {
-        // let goingRight = true;
         let cnv;
         let rotation = 0;
         const rotationSpeed = 0.006;
@@ -22,7 +21,7 @@
         };
         p5.draw = () => {
             p5.background(255, 255, 255);
-            // p5.directionalLight(255, 255, 255, 0, 0, -100);
+            //p5.directionalLight(255, 255, 255, 0, 0, -100);
             p5.noStroke();
             if (rotation >= 360) {
                 rotation = 0;

@@ -1,17 +1,40 @@
 <script>
     import { onMount } from 'svelte';
-    import { addLayer, deleteLayer, updateLayer, moveLayer, blendLayer } from '../constants/layers';
-    import { layers, layerConfig, resetStoreP5 } from '../stores/store.js';
+    import { types, addLayer, deleteLayer, moveLayer } from '../layers/layers';
+    import { layers, layerConfig, storeP5 } from '../stores/store.js';
+    import LayerView from './LayerView.svelte';
 
     onMount(() => {
-        loadlayers();
-        resetStoreP5();
+        const scconfig = localStorage.getItem('scconfig');
+        loadlayers(scconfig && JSON.parse(scconfig).length ? JSON.parse(scconfig) : $layerConfig);
     });
 
-    const loadlayers = () => {
-        $layerConfig.forEach((layer, index) => {
-            addLayer(layer, index);
+    const loadlayers = (layersToLoad) => {
+        layersToLoad.forEach((layer, index) => {
+            if (layer.type === types.img) {
+                storeP5.loadImage(layer.file.data, loadedImg => {
+                    addLayer({ 
+                        name: layer.file.name,
+                        file: layer.file,
+                        type: 'IMAGE',
+                        blend: layer.blend,
+                        posX: layer.posX,
+                        posY: layer.posY,
+                        img: loadedImg
+                    }, index);
+                });
+            } else {
+                addLayer(layer, index);
+            }
         });
+    }
+    const saveSession = () => {
+        const scconfig = [];
+        $layers.forEach((layer, i) => {
+            scconfig.push(layer.state);
+            delete scconfig[i].img;
+        });
+        localStorage.setItem('scconfig', JSON.stringify(scconfig));
     }
 </script>
 
@@ -20,37 +43,16 @@
     display: flex;
     flex-direction: column-reverse;
 }
-.layer {
-    text-align: left;
-}
-.layerid {
-    display: inline-block;
-    width: 50%;
-}
 </style>
 
 {#if $layers.length === 0}
-    <button on:click={loadlayers}>Load Starter Layers</button>
+    <button on:click={() => loadlayers($layerConfig)}>Load Starter Layers</button>
 {/if}
 {#if $layers}
     <div class="layerGroup">
     {#each $layers as layer, i}
-        <div class="layer">
-            <span class="layerid">{i}. {layer.$state.name} {layer.$state.type}</span>
-            <button on:click={() => moveLayer(layer, i, true)} disabled={$layers.length - 1 === i}>Up</button>
-            <button on:click={() => moveLayer(layer, i, false)} disabled={i === 0}>Down</button>
-            <button on:click={() => deleteLayer(i)}>Delete</button>
-            {#if layer.$state.type === "IMAGE" && layer.$state.blend === 0}
-                <button on:click={() => blendLayer(layer, i, true)}>Blend Edge</button>
-            {/if}
-            {#if layer.$state.type === "IMAGE" && layer.$state.blend !== 0}
-                <button on:click={() => blendLayer(layer, i, false)}>Unblend Edge</button>
-            {/if}
-            {#if layer.$state.type === "TEXT"}
-                <input type="text" bind:value={layer.$state.text} />
-                <button on:click={() => updateLayer(layer, i)}>Update</button>
-            {/if}
-        </div>
+        <LayerView bind:layer={layer} i={i} total={$layers.length} />
     {/each}
     </div>
+    <button on:click={saveSession}>Save</button>
 {/if}
