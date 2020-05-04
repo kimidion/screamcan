@@ -1,6 +1,6 @@
 <script>
     import LayerRender from "./LayerRender.svelte";
-    import CanRender from "./CanRender.svelte";
+    // import CanRender from "./CanRender.svelte";
 </script>
 
 <style>
@@ -19,6 +19,6 @@
 
 <main>
     <h1>Screamcan Design Studio</h1>
-    <CanRender />
+    <!-- <CanRender /> -->
     <LayerRender />
 </main>

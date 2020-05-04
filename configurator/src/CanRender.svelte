@@ -1,7 +1,7 @@
 <script>
     import P5Canvas from "./P5Canvas.svelte";
     import { can, texture } from './stores/store.js';
-    import { canvas } from './layers/layers.js';
+    import { wglcanvas } from './layers/layers.js';
 
     let canSketch = (p5) => {
         let cnv;
@@ -15,7 +15,7 @@
             rotating = true;
         }
         p5.setup = () => {
-            cnv = canvas(p5, 1.5);
+            cnv = wglcanvas(p5, 1.5);
             cnv.mouseOver(pauseRotation);
             cnv.mouseOut(resumeRotation);
         };

@@ -9,6 +9,7 @@
 <style>
 .layer {
     text-align: left;
+    position: relative;
 }
 .layerid {
     display: inline-block;
@@ -17,15 +18,15 @@
 </style>
 
 <div class="layer">
-    <span class="layerid">{i + 1}. {layer.state.name} {layer.state.type}</span>
+    <span class="layerid">{i + 1}. {layer.state.name} {layer.state.text || ''}</span>
     <button on:click={() => moveLayer(layer, i, true)} disabled={total - 1 === i}>Up</button>
     <button on:click={() => moveLayer(layer, i, false)} disabled={i === 0}>Down</button>
     <button on:click={() => deleteLayer(i)}>Delete</button>
-    <input type="checkbox" bind:checked={layer.editing} /> Edit
-    {#if layer.state.type === "IMAGE" && layer.editing}
+    <input type="checkbox" bind:checked={layer.state.editing} /> Edit
+    {#if layer.state.type === "IMAGE" && layer.state.editing}
         <br/><input type="range" min="0" max="20" bind:value={layer.state.blend} />
     {/if}
-    {#if layer.state.type === "TEXT" && layer.editing}
+    {#if layer.state.type === "TEXT" && layer.state.editing}
         <br/><input type="text" bind:value={layer.state.text} />
         <br/><input type="range" min="-50" max={can.circumference} bind:value={layer.state.posX} /> move x
         <br/><input type="range" min="0" max={can.height + layer.state.textSize} bind:value={layer.state.posY} /> move y

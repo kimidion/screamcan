@@ -49,25 +49,85 @@ export const addLayer = (layer, index) => {
     });
 }
 
+const getLayerBounds = (layer) => {
+    let top, right, bottom, left;
+    layer.loadPixels();
+    // set bounding box by reading the pixel data and finding the edge-most pixels that are not transparent
+    const roundedWidth = Math.floor(layer.width);
+    // find top edge pixel
+    for (let y = 0; y < layer.height; y += 1) {
+        for (let x = 0; x < roundedWidth; x += 1) {
+            const index = (x + y * roundedWidth) * 4;
+            if (layer.pixels[index + 3] !== 0) {
+                top = y;
+                // exit loops
+                y = layer.height;
+                x = roundedWidth;
+            }
+        }
+    }
+    // find right edge pixel
+    for (let x = roundedWidth - 1 ; x > -1; x -= 1) {
+        for (let y = 0; y < layer.height; y += 1) {
+            const index = (x + y * roundedWidth) * 4;
+            if (layer.pixels[index + 3] !== 0) {
+                right = x;
+                // exit loops
+                y = layer.height;
+                x = -1;
+            }
+        }
+    }
+    // find bottom edge pixel
+    for (let y = layer.height - 1; y > -1; y -= 1) {
+        for (let x = 0; x < roundedWidth; x += 1) {
+            const index = (x + y * roundedWidth) * 4;
+            if (layer.pixels[index + 3] !== 0) {
+                bottom = y;
+                // exit loops
+                y = -1;
+                x = roundedWidth;
+            }
+        }
+    }
+    // find left edge pixel
+    for (let x = 0; x < layer.width; x += 1) {
+        for (let y = 0; y < layer.height; y += 1) {
+            const index = (x + y * Math.floor(layer.width)) * 4;
+            if (layer.pixels[index + 3] !== 0) {
+                left = x;
+                // exit loops
+                y = layer.height;
+                x = layer.width;
+            }
+        }
+    }
+    return { top, right, bottom, left };
+}
+
 export const textLayer = (state) => {
-    let editing = false;
+    state.editing = false;
     return ({
         state,
-        editing,
+        clicked: (x, y) => {
+            return false;
+        },
         render: (p5) => {
             const layer = layerInit();
             layer.textSize(state.textSize);
             layer.text(state.text, state.posX, state.posY);
             p5.image(layer, 0, 0);
+            if (state.editing) {
+                state.bounds = getLayerBounds(layer);
+            }
         }
     });
 }
 
 export const solidLayer = (state) => {
-    let editing = false;
+    state.editing = false;
     return ({
         state,
-        editing,
         render: (p5) => {
             p5.background(state.r || 255, state.g || 255, state.b || 255, state.a || 255);
         }
@@ -75,10 +135,9 @@ export const solidLayer = (state) => {
 }
 
 export const imageLayer = (state) => {
-    let editing = false;
+    state.editing = false;
     return ({
         state,
-        editing,
         render: (p5) => {
             if (state.blend === 0) {
                 p5.image(state.img, 0, 0);
@@ -107,6 +166,10 @@ export const imageLayer = (state) => {
     });
 }
 
-export const canvas = (p5, heightOffset) => {
+export const wglcanvas = (p5, heightOffset) => {
     return p5.createCanvas(can.circumference, can.height*(heightOffset || 1), p5.WEBGL);
+}
+
+export const canvas = (p5, heightOffset) => {
+    return p5.createCanvas(can.circumference, can.height*(heightOffset || 1));
 }
