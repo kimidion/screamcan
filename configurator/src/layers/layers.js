@@ -109,17 +109,12 @@ export const textLayer = (state) => {
     state.editing = false;
     return ({
         state,
-        clicked: (x, y) => {
-            return false;
-        },
         render: (p5) => {
             const layer = layerInit();
             layer.textSize(state.textSize);
             layer.text(state.text, state.posX, state.posY);
             p5.image(layer, 0, 0);
-            if (state.editing) {
-                state.bounds = getLayerBounds(layer);
-            }
+            state.bounds = getLayerBounds(layer);
         }
     });
 }

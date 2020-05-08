@@ -1,15 +1,17 @@
 <script>
+    import Header from "./components/Header.svelte";
     import LayerRender from "./LayerRender.svelte";
-    // import CanRender from "./CanRender.svelte";
+    import CanRender from "./CanRender.svelte";
 </script>
 
 <style>
     :global(body) {
         margin: 0;
+        padding: 0;
     }
     main {
         font-family: sans-serif;
-        text-align: center;
+        margin-top: 15px;
     }
 </style>
 
@@ -17,8 +19,8 @@
     <title>Screamcan Design Studio</title>
 </svelte:head>
 
+<Header />
 <main>
-    <h1>Screamcan Design Studio</h1>
-    <!-- <CanRender /> -->
+    <CanRender />
     <LayerRender />
 </main>

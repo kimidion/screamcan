@@ -42,13 +42,13 @@
 
 <style>
     #layerConfig {
-        float: right;
+        width: 100%;
         position: relative;
     }
 </style>
 
 <div id="layerConfig">
     <P5Canvas sketch={layerSketch} id="layers" />
-    <CursorPos x={posX} y={posY} mouse={mouseIsPressed} />
+    <CursorPos x={posX} y={posY} />
     <User />
 </div>
