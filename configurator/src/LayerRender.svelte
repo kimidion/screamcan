@@ -16,6 +16,7 @@
             mouseIsPressed = !mouseIsPressed;
         }
         p5.setup = () => {
+            p5.pixelDensity(1);
             cnv = wglcanvas(p5);
             p5.imageMode(p5.CENTER);
             cnv.drop(p5.addImage);

@@ -37,5 +37,7 @@ export const resetStoreP5 = () => {
 
 // use the storeP5 instance to create each layer
 export const layerInit = () => {
-    return storeP5.createGraphics(can.circumference, can.height);
+    const graphics = storeP5.createGraphics(can.circumference, can.height);
+    graphics.pixelDensity(1);
+    return graphics;
 }

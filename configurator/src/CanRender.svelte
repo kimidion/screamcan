@@ -15,6 +15,7 @@
             rotating = true;
         }
         p5.setup = () => {
+            p5.pixelDensity(1);
             cnv = wglcanvas(p5, 1.5);
             cnv.mouseOver(pauseRotation);
             cnv.mouseOut(resumeRotation);
